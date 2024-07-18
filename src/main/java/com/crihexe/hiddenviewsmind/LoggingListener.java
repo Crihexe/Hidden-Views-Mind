@@ -25,7 +25,7 @@ import org.springframework.core.env.PropertySource;
 @Slf4j
 public class LoggingListener implements ApplicationListener<ApplicationPreparedEvent> {
 
-    private final List<String> SENSITIVE_PROPERTIES = List.of("password", "credential", "token", "user-id");
+    private final List<String> SENSITIVE_PROPERTIES = List.of("password", "credential", "token", "user-id", "secret");
 
     @Override
     public void onApplicationEvent(final ApplicationPreparedEvent event) {

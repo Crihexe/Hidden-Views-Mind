@@ -1,5 +1,3 @@
-version: '3.8'
-
 x-environment: &common-db-env
   MYSQL_DATABASE: hiddenviews
   MYSQL_USER: app

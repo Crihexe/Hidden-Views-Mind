@@ -1,0 +1,40 @@
+services:
+  java:
+    ports:
+      - "8080:8080"
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - media-cache:/app/media-cache
+    depends_on:
+      - mongodb
+      - mysqldb
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/hiddenviews?allowPublicKeyRetrieval=true
+    networks:
+      - hiddenviews
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks:
+      - hiddenviews
+  mysqldb:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_DATABASE: hiddenviews
+      MYSQL_USER: app
+      MYSQL_PASSWORD: hiddenviews
+      MYSQL_ROOT_PASSWORD: hiddenviews_root
+    ports:
+      - "3306:3306"
+    networks:
+      - hiddenviews
+
+volumes:
+  media-cache:
+
+networks:
+  hiddenviews:

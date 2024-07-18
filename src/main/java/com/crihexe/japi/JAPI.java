@@ -111,10 +111,11 @@ public class JAPI {
 					Object value = f.get(request);
 					if(value != null) {
 						String paramName = f.getAnnotation(QueryParam.class).name();
-						endpoint += (queryParamFound ? "&" : "?") + (paramName.equals("") ? f.getName() : paramName) + "=" + f.get(request);
+						String encodedValue = URLEncoder.encode(value.toString(), StandardCharsets.UTF_8);
+						endpoint += (queryParamFound ? "&" : "?") + (paramName.equals("") ? f.getName() : paramName) + "=" + encodedValue;
 						queryParamFound = true;
 					} else if(f.getAnnotation(QueryParam.class).required())
-						throw new JAPIException("Required param is null");
+						throw new JAPIException("Required param is null: " + f.getName());
 				}
 				if(a.annotationType().equals(AuthKey.class)) {
 					Auth auth = c.getAnnotation(Method.class).auth();
@@ -187,12 +188,7 @@ public class JAPI {
 	}
 	
 	private String encodeValue(String value) {
-	    try {
-			return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	    return value;
+		return URLEncoder.encode(value, StandardCharsets.UTF_8);
 	}
 	
 	private String get(String url, com.crihexe.japi.http.Header...headers) {
@@ -200,7 +196,7 @@ public class JAPI {
 		
 		for(com.crihexe.japi.http.Header header : headers)
 			http.addHeader(header.key, header.value);
-		
+
 		return execute(http);
 	}
 	
@@ -272,6 +268,7 @@ public class JAPI {
 			CloseableHttpResponse response = httpclient.execute(http);
 			String content = IOUtils.toString(response.getEntity().getContent(), StandardCharsets.UTF_8);
 			response.close();
+			System.out.println(content);
 			return content;
 		} catch (IOException e) {
 			e.printStackTrace();

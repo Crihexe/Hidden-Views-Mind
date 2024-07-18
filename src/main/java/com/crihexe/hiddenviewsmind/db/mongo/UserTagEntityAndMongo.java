@@ -1,4 +1,4 @@
-package com.crihexe.hiddenviewsmind.db.entities;
+package com.crihexe.hiddenviewsmind.db.mongo;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_tag")
 @Document(collection = "user_tag_mongo")
-public class UserTagEntity {
+public class UserTagEntityAndMongo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -31,6 +31,12 @@ public class UserTagEntity {
     @Column(name = "y")
     private Float y;
 
+    public UserTagEntityAndMongo(String username, Float x, Float y) {
+        this.username = username;
+        this.x = x;
+        this.y = y;
+    }
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
@@ -38,7 +44,7 @@ public class UserTagEntity {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        UserTagEntity that = (UserTagEntity) o;
+        UserTagEntityAndMongo that = (UserTagEntityAndMongo) o;
         return getId() != null && Objects.equals(getId(), that.getId());
     }
 

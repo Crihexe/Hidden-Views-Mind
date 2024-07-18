@@ -1,9 +1,8 @@
-package com.crihexe.hiddenviewsmind.contentpublisher.instagram.requests;
+package com.crihexe.hiddenviewsmind.publisher.instagram.requests;
 
 import com.crihexe.japi.annotations.*;
 import com.crihexe.japi.annotations.Method.Auth;
 import com.crihexe.japi.annotations.Method.Methods;
-import lombok.Builder;
 
 @Method(method = Methods.GET, auth = Auth.QueryToken)
 @Endpoint("/v20.0/{userID}/insights")

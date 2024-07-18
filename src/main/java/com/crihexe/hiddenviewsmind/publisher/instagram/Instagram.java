@@ -1,36 +1,49 @@
-package com.crihexe.hiddenviewsmind.contentpublisher.instagram;
+package com.crihexe.hiddenviewsmind.publisher.instagram;
 
-import com.crihexe.hiddenviewsmind.contentpublisher.instagram.requests.PublishMedia;
-import com.crihexe.hiddenviewsmind.contentpublisher.instagram.responses.BasicId;
-import com.crihexe.hiddenviewsmind.contentpublisher.instagram.requests.CreateImageMediaContainer;
-import com.crihexe.hiddenviewsmind.db.entities.PostEntity;
 import com.crihexe.hiddenviewsmind.dto.Post;
+import com.crihexe.hiddenviewsmind.publisher.instagram.requests.PublishMedia;
+import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
+import com.crihexe.hiddenviewsmind.publisher.instagram.requests.CreateImageMediaContainer;
 import com.crihexe.japi.JAPI;
 import com.crihexe.japi.exception.JAPIException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import org.springframework.boot.configurationprocessor.json.JSONException;
+import jakarta.annotation.PostConstruct;
+import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+@Service
 public class Instagram {
 
-	// TODO capire come fare ad ottenere sto access token
-	private static final String ACCESS_TOKEN = "EAAGiI8Y77pMBO4ALF9oeRyjfCWy6WxCeevSB5XReIq7VKhOHBHA8uPMzuMbAuIMaTZCGAg25Xf5ZAIvgtybDI7gs3DCKSLXrMu5yoaRNxNHeiY847wc2OMyOYeZA5KWtMf3zqZBONB3NW73lbZBZBO9ZAYp8HLDZBOmZBHCMFT77Hb483NDmVozwAJUFjaYouIaEjQtkcFjlO50UAXdZBNxQfx";
-	private static final String userID = "17841466971303580";
+	// TODO https://stackoverflow.com/questions/12168452/long-lasting-fb-access-token-for-server-to-pull-fb-page-info/21927690#21927690
+	// TODO a quanto pare nella risposta spiega come convertire un token normale in un LONG LIVED token, che quindi dura 2 mesi e dovro' fare a mano ogni volta, ci sta
+	@Value("${secrets.ig.access-token.long-lived}")
+	private static String ACCESS_TOKEN;
+	@Value("${secrets.ig.user-id}")
+	private static String userID;
 	
 	private JAPI japi;
-	
-	public Instagram() {
+
+	@PostConstruct
+	private void init() {
 		japi = new JAPI("https://graph.facebook.com", ACCESS_TOKEN);
 	}
 	
-	public BasicId uploadImage(String imageURL, String caption) throws JsonMappingException, JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
-		CreateImageMediaContainer media = new CreateImageMediaContainer(userID, imageURL);
-		media.caption = "swag test @crih.exe @_viola.scarda_"; // caption;
+	public BasicId uploadImage(Post post) throws JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
+		CreateImageMediaContainer media = new CreateImageMediaContainer(userID, post);
 
+		media.imageURL = post.getImageURL();
+		media.carouselItem = post.getCarouselItem();
+		media.caption = post.getCaption();
+		media.locationID = post.getLocationID();
+		media.userTags = post.getUserTags();
+
+		// TODO manage exceptions like errors from meta api
 		return japi.send(media, BasicId.class);
 	}
 	
-	public BasicId publishMedia(String id) throws JsonMappingException, JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
+	public BasicId publishMedia(String id) throws JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
 		return japi.send(new PublishMedia(userID, id), BasicId.class);
 	}
 	

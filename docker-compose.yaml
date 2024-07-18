@@ -1,40 +1,78 @@
+version: '3.8'
+
+x-environment: &common-db-env
+  MYSQL_DATABASE: hiddenviews
+  MYSQL_USER: app
+  MONGO_INITDB_DATABASE: hiddenviews
+  MONGO_INITDB_ROOT_USERNAME: app
+
 services:
   java:
-    ports:
-      - "8080:8080"
-    build:
-      context: .
-      dockerfile: Dockerfile
+    build: .
     volumes:
-      - media-cache:/app/media-cache
+      - mediacache:/app/mediacache
     depends_on:
       - mongodb
       - mysqldb
-    environment:
-      - spring.datasource.url=jdbc:mysql://mysqldb:3306/hiddenviews?allowPublicKeyRetrieval=true
+    ports:
+      - "8080:8080"
     networks:
-      - hiddenviews
+      - app
+    environment:
+      <<: *common-db-env
+    secrets:
+      - secrets.meta.app-id
+      - secrets.meta.client-secret
+      - secrets.ig.user-id
+      - secrets.ig.access-token.long-lived
+      - secrets.mysql.password.default
+      - secrets.mongo.password.root
+    restart: unless-stopped
   mongodb:
     image: mongo:latest
-    ports:
-      - "27017:27017"
+    restart: always
+    environment:
+      <<: *common-db-env
+      MONGO_INITDB_ROOT_PASSWORD: /run/secrets/secrets.mongo.password.root
+    expose:
+      - 27017
     networks:
-      - hiddenviews
+      - app
+    secrets:
+      - secrets.mongo.password.root
   mysqldb:
     image: mysql:latest
     restart: always
     environment:
-      MYSQL_DATABASE: hiddenviews
-      MYSQL_USER: app
-      MYSQL_PASSWORD: hiddenviews
-      MYSQL_ROOT_PASSWORD: hiddenviews_root
-    ports:
-      - "3306:3306"
+      <<: *common-db-env
+      MYSQL_PASSWORD_FILE: /run/secrets/secrets.mysql.password.default
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/secrets.mysql.password.root
+    expose:
+      - 3306
     networks:
-      - hiddenviews
+      - app
+    secrets:
+      - secrets.mysql.password.default
+      - secrets.mysql.password.root
 
 volumes:
-  media-cache:
+  mediacache:
 
 networks:
-  hiddenviews:
+  app:
+
+secrets:
+  secrets.meta.app-id:
+    environment: HVM_META_APP_ID
+  secrets.meta.client-secret:
+    environment: HVM_META_CLIENT_SECRET
+  secrets.ig.user-id:
+    environment: HVM_IG_USER_ID
+  secrets.ig.access-token.long-lived:
+    environment: HVM_IG_LONG_LIVED_ACCESS_TOKEN
+  secrets.mysql.password.default:
+    environment: HVM_MYSQL_PASSWORD
+  secrets.mysql.password.root:
+    environment: HVM_MYSQL_ROOT_PASSWORD
+  secrets.mongo.password.root:
+    environment: HVM_MONGO_ROOT_PASSWORD

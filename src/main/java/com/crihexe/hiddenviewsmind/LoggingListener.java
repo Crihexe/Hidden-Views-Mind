@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.StreamSupport;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
@@ -15,6 +15,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
 import org.springframework.core.env.PropertySource;
 
+// from: https://gist.github.com/Christian-Oette/a0bb05cb703fea20d28bbf46b7ce7574
 /**
  * Usage
  *  SpringApplication springApplication = new SpringApplication(MyApplication.class);
@@ -24,7 +25,7 @@ import org.springframework.core.env.PropertySource;
 @Slf4j
 public class LoggingListener implements ApplicationListener<ApplicationPreparedEvent> {
 
-    private final List<String> SENSITIVE_PROPERTIES = List.of("password", "credential", "token");
+    private final List<String> SENSITIVE_PROPERTIES = List.of("password", "credential", "token", "user-id");
 
     @Override
     public void onApplicationEvent(final ApplicationPreparedEvent event) {

@@ -1,4 +1,4 @@
-package com.crihexe.hiddenviewsmind.contentpublisher.instagram.requests;
+package com.crihexe.hiddenviewsmind.publisher.instagram.requests;
 
 import com.crihexe.hiddenviewsmind.dto.Post;
 import com.crihexe.hiddenviewsmind.dto.UserTagImage;
@@ -7,6 +7,7 @@ import com.crihexe.japi.annotations.Method.Auth;
 import com.crihexe.japi.annotations.Method.Methods;
 
 import java.util.List;
+import java.util.Set;
 
 @Method(method = Methods.POST, auth = Auth.QueryToken)
 @Endpoint("/v20.0/{userID}/media")
@@ -31,13 +32,15 @@ public class CreateImageMediaContainer {
 	public String locationID;
 	
 	@QueryParam(name = "user_tags")
-	public List<UserTagImage> userTags;
-	
-	// ci sarebbe product_tags // https://developers.facebook.com/docs/instagram-api/reference/ig-user/media#creating
-	
-	public CreateImageMediaContainer(Post post) {
+	public Set<UserTagImage> userTags;
+
+	public CreateImageMediaContainer(String userID, Post post) {
 		this.userID = userID;
-		this.imageURL = imageURL;
+		this.imageURL = post.getImageURL();
+		this.carouselItem = post.getCarouselItem();
+		this.caption = post.getCaption();
+		this.locationID = post.getLocationID();
+		this.userTags = post.getUserTags();
 	}
 	
 }

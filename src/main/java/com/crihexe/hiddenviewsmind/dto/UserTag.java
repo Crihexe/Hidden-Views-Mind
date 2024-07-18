@@ -1,4 +1,4 @@
-package com.crihexe.hiddenviewsmind.objects;
+package com.crihexe.hiddenviewsmind.dto;
 
 public class UserTag {
 	

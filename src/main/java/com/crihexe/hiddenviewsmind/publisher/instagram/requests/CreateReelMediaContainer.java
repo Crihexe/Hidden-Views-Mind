@@ -1,4 +1,4 @@
-package com.crihexe.hiddenviewsmind.contentpublisher.instagram.requests;
+package com.crihexe.hiddenviewsmind.publisher.instagram.requests;
 
 import com.crihexe.hiddenviewsmind.dto.UserTagImage;
 import com.crihexe.japi.annotations.*;

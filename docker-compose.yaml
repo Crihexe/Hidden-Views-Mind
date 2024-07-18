@@ -13,7 +13,7 @@ services:
       - mongodb
       - mysqldb
     ports:
-      - "8080:8080"
+      - "7980:8080"
     networks:
       - app
     environment:

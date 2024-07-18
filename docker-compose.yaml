@@ -31,7 +31,7 @@ services:
     restart: always
     environment:
       <<: *common-db-env
-      MONGO_INITDB_ROOT_PASSWORD: /run/secrets/secrets.mongo.password.root
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/secrets.mongo.password.root
     expose:
       - 27017
     networks:

@@ -2,7 +2,8 @@ x-environment: &common-db-env
   MYSQL_DATABASE: hiddenviews
   MYSQL_USER: app
   MONGO_INITDB_DATABASE: hiddenviews
-  MONGO_INITDB_ROOT_USERNAME: app
+  MONGO_INITDB_USERNAME: app
+  MONGO_INITDB_ROOT_USERNAME: root
 
 services:
   java:
@@ -24,19 +25,23 @@ services:
       - secrets.ig.user-id
       - secrets.ig.access-token.long-lived
       - secrets.mysql.password.default
-      - secrets.mongo.password.root
+      - secrets.mongo.password.default
     restart: unless-stopped
   mongodb:
     image: mongo:latest
     restart: always
     environment:
       <<: *common-db-env
+      MONGO_INITDB_PASSWORD_FILE: /run/secrets/secrets.mongo.password.default
       MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/secrets.mongo.password.root
+    volumes:
+      - ./init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
     expose:
       - 27017
     networks:
       - app
     secrets:
+      - secrets.mongo.password.default
       - secrets.mongo.password.root
   mysqldb:
     image: mysql:latest
@@ -72,5 +77,7 @@ secrets:
     environment: HVM_MYSQL_PASSWORD
   secrets.mysql.password.root:
     environment: HVM_MYSQL_ROOT_PASSWORD
+  secrets.mongo.password.default:
+    environment: HVM_MONGO_PASSWORD
   secrets.mongo.password.root:
     environment: HVM_MONGO_ROOT_PASSWORD

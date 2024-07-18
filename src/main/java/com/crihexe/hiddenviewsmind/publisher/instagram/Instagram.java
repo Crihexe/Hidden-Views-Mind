@@ -19,9 +19,9 @@ public class Instagram {
 	// TODO https://stackoverflow.com/questions/12168452/long-lasting-fb-access-token-for-server-to-pull-fb-page-info/21927690#21927690
 	// TODO a quanto pare nella risposta spiega come convertire un token normale in un LONG LIVED token, che quindi dura 2 mesi e dovro' fare a mano ogni volta, ci sta
 	@Value("${secrets.ig.access-token.long-lived}")
-	private static String ACCESS_TOKEN;
+	private String ACCESS_TOKEN;
 	@Value("${secrets.ig.user-id}")
-	private static String userID;
+	private String userID;
 	
 	private JAPI japi;
 

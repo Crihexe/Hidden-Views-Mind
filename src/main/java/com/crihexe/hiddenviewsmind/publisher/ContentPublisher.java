@@ -51,7 +51,7 @@ public class ContentPublisher {
 
         String filename = postingQueueService.push(post, content);
 
-        post.setImageURL("http://localhost:8080/media/" + filename);
+        post.setImageURL("https://hvm-cache.crihexe.com/media/" + filename);
         System.out.println(post.getImageURL());
 
         try {

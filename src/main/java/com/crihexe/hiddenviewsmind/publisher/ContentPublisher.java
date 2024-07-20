@@ -4,19 +4,27 @@ import com.crihexe.hiddenviewsmind.dto.Post;
 import com.crihexe.hiddenviewsmind.media.PostingQueueService;
 import com.crihexe.hiddenviewsmind.publisher.instagram.Instagram;
 import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
+import com.crihexe.japi.JAPI;
 import com.crihexe.japi.exception.JAPIException;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.hc.client5.http.classic.methods.HttpGet;
+import org.apache.hc.client5.http.classic.methods.HttpPost;
+import org.apache.hc.client5.http.entity.mime.MultipartEntityBuilder;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.ContentType;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.ParseException;
+import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.json.JSONException;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 
 @Service
 public class ContentPublisher {
@@ -63,5 +71,60 @@ public class ContentPublisher {
     }
 
 
+    public String testPublishImagePostLocal() {
+        Post post = Post.builder()
+                .caption("swag @crih.exe @_viola.scarda_")
+                .build();
 
+        byte[] content;
+        try {
+            InputStream in = new ClassPathResource("testimage.png").getInputStream();
+            content = in.readAllBytes();
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost uploadFile = new HttpPost("https://hvm-cache.crihexe.com/media/host");
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        try {
+            builder.addTextBody("post", new ObjectMapper().writeValueAsString(post), ContentType.APPLICATION_JSON);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        builder.addBinaryBody(
+                "file",
+                content,
+                ContentType.APPLICATION_OCTET_STREAM,
+                "testimage.png"
+        );
+
+        HttpEntity multipart = builder.build();
+        uploadFile.setEntity(multipart);
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(uploadFile);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        HttpEntity responseEntity = response.getEntity();
+        System.out.println(responseEntity.toString());
+        try {
+            String cache = EntityUtils.toString(responseEntity, "UTF-8");
+            HttpGet pubFile = new HttpGet("https://hvm-cache.crihexe.com/media/publish/" + cache);
+            try {
+                response = httpClient.execute(uploadFile);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            responseEntity = response.getEntity();
+            return EntityUtils.toString(responseEntity, "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -5,9 +5,7 @@ import com.crihexe.hiddenviewsmind.db.entities.KeywordsEntity;
 import com.crihexe.hiddenviewsmind.db.entities.PostEntity;
 import com.crihexe.hiddenviewsmind.db.mongo.PostingQueueMongo;
 import com.crihexe.hiddenviewsmind.db.mongo.UserTagEntityAndMongo;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,6 +19,8 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Post {
 
     private Long id;

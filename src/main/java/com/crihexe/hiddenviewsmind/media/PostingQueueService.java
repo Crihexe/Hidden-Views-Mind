@@ -4,12 +4,19 @@ import com.crihexe.hiddenviewsmind.db.mongo.PostingQueueMongo;
 import com.crihexe.hiddenviewsmind.db.repositories.PostRepository;
 import com.crihexe.hiddenviewsmind.db.repositories.PostingQueueRepository;
 import com.crihexe.hiddenviewsmind.dto.Post;
+import com.crihexe.hiddenviewsmind.publisher.instagram.Instagram;
+import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
+import com.crihexe.japi.exception.JAPIException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.annotation.PostConstruct;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -28,6 +35,9 @@ public class PostingQueueService {
 
     @Autowired
     private PostingQueueRepository postingQueueRepository;
+
+    @Autowired
+    private Instagram instagram;
 
     @Autowired
     private PostRepository postRepository;
@@ -137,4 +147,22 @@ public class PostingQueueService {
 
     }
 
+    public String host(Post post, MultipartFile file) throws IOException {
+        return push(post, file.getBytes());
+    }
+
+    public void publish(String filename) {
+        PostingQueueMongo p = postingQueueRepository.findByFilename(filename);
+        Post post = Post.from(p);
+
+        post.setImageURL("https://hvm-cache.crihexe.com/media/" + filename);
+        System.out.println(post.getImageURL());
+
+        try {
+            BasicId container_id = instagram.uploadImage(post);
+            BasicId post_id = instagram.publishMedia(container_id.id);
+        } catch (JsonProcessingException | JAPIException | IllegalAccessException | JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

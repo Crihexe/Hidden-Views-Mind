@@ -156,16 +156,17 @@ public class PostingQueueService {
         PostingQueueMongo p = postingQueueRepository.findByFilename(filename);
         Post post = Post.from(p);
 
-        post.setImageURL("https://hvm-cache.crihexe.com/media/" + filename);
-        System.out.println(post.getImageURL());
+
 
         try {
-            BasicId container_id;
+            BasicId container_id = null;
             if(post.getMediaType() != null) {
                 if(post.getMediaType().equals(PostType.REEL)) {
+                    post.setVideoURL("https://hvm-cache.crihexe.com/media/" + filename);
                     container_id = instagram.uploadReel(post);
-                } else container_id = instagram.uploadImage(post);
+                }
             } else {
+                post.setImageURL("https://hvm-cache.crihexe.com/media/" + filename);
                 container_id = instagram.uploadImage(post);
             }
             BasicId post_id = instagram.publishMedia(container_id.id);

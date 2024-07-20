@@ -1,6 +1,7 @@
 package com.crihexe.hiddenviewsmind.publisher;
 
 import com.crihexe.hiddenviewsmind.dto.Post;
+import com.crihexe.hiddenviewsmind.dto.PostType;
 import com.crihexe.hiddenviewsmind.media.PostingQueueService;
 import com.crihexe.hiddenviewsmind.publisher.instagram.Instagram;
 import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
@@ -135,6 +136,7 @@ public class ContentPublisher {
     public String testPublishReelPostLocal() {
         Post post = Post.builder()
                 .caption("swag @crih.exe @_viola.scarda_")
+                .mediaType(PostType.REEL)
                 .build();
 
         byte[] content;

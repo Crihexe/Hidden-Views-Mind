@@ -48,7 +48,7 @@ public class CreateReelMediaContainer {
 
 	public CreateReelMediaContainer(String userID, Post post) {
 		this.userID = userID;
-		this.mediaType = post.getMediaType().getName();
+		//this.mediaType = post.getMediaType().getName();	// non serve secondo me. se viene usata questa classe e' solo per reels
 		this.videoURL = post.getVideoURL();
 		this.caption = post.getCaption();
 		this.shareToFeed = post.getShareToFeed();

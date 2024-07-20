@@ -161,8 +161,10 @@ public class PostingQueueService {
 
         try {
             BasicId container_id;
-            if(post.getMediaType().equals(PostType.REEL)) {
-                container_id = instagram.uploadReel(post);
+            if(post.getMediaType() != null) {
+                if(post.getMediaType().equals(PostType.REEL)) {
+                    container_id = instagram.uploadReel(post);
+                } else container_id = instagram.uploadImage(post);
             } else {
                 container_id = instagram.uploadImage(post);
             }

@@ -115,7 +115,7 @@ public class ContentPublisher {
             String cache = EntityUtils.toString(responseEntity, "UTF-8");
             HttpGet pubFile = new HttpGet("https://hvm-cache.crihexe.com/media/publish/" + cache);
             try {
-                response = httpClient.execute(uploadFile);
+                response = httpClient.execute(pubFile);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

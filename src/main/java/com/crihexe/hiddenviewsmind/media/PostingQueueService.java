@@ -169,8 +169,9 @@ public class PostingQueueService {
                 post.setImageURL("https://hvm-cache.crihexe.com/media/" + filename);
                 container_id = instagram.uploadImage(post);
             }
+            Thread.sleep(10000);
             BasicId post_id = instagram.publishMedia(container_id.id);
-        } catch (JsonProcessingException | JAPIException | IllegalAccessException | JSONException e) {
+        } catch (JsonProcessingException | JAPIException | IllegalAccessException | JSONException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }

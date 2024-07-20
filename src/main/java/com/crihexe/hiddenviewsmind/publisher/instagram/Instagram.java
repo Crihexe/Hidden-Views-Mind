@@ -1,6 +1,7 @@
 package com.crihexe.hiddenviewsmind.publisher.instagram;
 
 import com.crihexe.hiddenviewsmind.dto.Post;
+import com.crihexe.hiddenviewsmind.publisher.instagram.requests.CreateReelMediaContainer;
 import com.crihexe.hiddenviewsmind.publisher.instagram.requests.PublishMedia;
 import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
 import com.crihexe.hiddenviewsmind.publisher.instagram.requests.CreateImageMediaContainer;
@@ -32,13 +33,12 @@ public class Instagram {
 	
 	public BasicId uploadImage(Post post) throws JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
 		CreateImageMediaContainer media = new CreateImageMediaContainer(userID, post);
+		// TODO manage exceptions like errors from meta api
+		return japi.send(media, BasicId.class);
+	}
 
-		media.imageURL = post.getImageURL();
-		media.carouselItem = post.getCarouselItem();
-		media.caption = post.getCaption();
-		media.locationID = post.getLocationID();
-		media.userTags = post.getUserTags();
-
+	public BasicId uploadReel(Post post) throws JsonProcessingException, NullPointerException, JSONException, IllegalArgumentException, IllegalAccessException, JAPIException {
+		CreateReelMediaContainer media = new CreateReelMediaContainer(userID, post);
 		// TODO manage exceptions like errors from meta api
 		return japi.send(media, BasicId.class);
 	}

@@ -41,6 +41,11 @@ public class TestController {
         return cp.testPublishImagePostLocal();
     }
 
+    @GetMapping("/local/reel")
+    public String callLocalReelTest() {
+        return cp.testPublishReelPostLocal();
+    }
+
     @GetMapping
     public String test() throws JsonProcessingException {
         String post = "{\"id\":null,\"instagram_id\":null,\"mediaType\":null,\"imageURL\":null,\"videoURL\":null,\"caption\":\"swag @crih.exe @_viola.scarda_\",\"carouselItem\":null,\"children\":[],\"userTags\":[],\"audioName\":null,\"shareToFeed\":null,\"locationID\":null,\"coverURL\":null,\"thumbOffset\":null,\"keywords\":[],\"addedAt\":null,\"postedAt\":null}";

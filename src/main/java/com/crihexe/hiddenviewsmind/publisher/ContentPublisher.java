@@ -85,6 +85,10 @@ public class ContentPublisher {
             throw new RuntimeException(e);
         }
 
+        return testPublishLocal(post, content);
+    }
+
+    public String testPublishLocal(Post post, byte[] content) {
         CloseableHttpClient httpClient = HttpClients.createDefault();
         HttpPost uploadFile = new HttpPost("https://hvm-cache.crihexe.com/media/host");
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -126,5 +130,22 @@ public class ContentPublisher {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String testPublishReelPostLocal() {
+        Post post = Post.builder()
+                .caption("swag @crih.exe @_viola.scarda_")
+                .build();
+
+        byte[] content;
+        try {
+            InputStream in = new ClassPathResource("testreel.mp4").getInputStream();
+            content = in.readAllBytes();
+            in.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return testPublishLocal(post, content);
     }
 }

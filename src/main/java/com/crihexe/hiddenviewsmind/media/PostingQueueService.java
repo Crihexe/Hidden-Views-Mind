@@ -4,6 +4,7 @@ import com.crihexe.hiddenviewsmind.db.mongo.PostingQueueMongo;
 import com.crihexe.hiddenviewsmind.db.repositories.PostRepository;
 import com.crihexe.hiddenviewsmind.db.repositories.PostingQueueRepository;
 import com.crihexe.hiddenviewsmind.dto.Post;
+import com.crihexe.hiddenviewsmind.dto.PostType;
 import com.crihexe.hiddenviewsmind.publisher.instagram.Instagram;
 import com.crihexe.hiddenviewsmind.publisher.instagram.responses.BasicId;
 import com.crihexe.japi.exception.JAPIException;
@@ -159,7 +160,12 @@ public class PostingQueueService {
         System.out.println(post.getImageURL());
 
         try {
-            BasicId container_id = instagram.uploadImage(post);
+            BasicId container_id;
+            if(post.getMediaType().equals(PostType.REEL)) {
+                container_id = instagram.uploadReel(post);
+            } else {
+                container_id = instagram.uploadImage(post);
+            }
             BasicId post_id = instagram.publishMedia(container_id.id);
         } catch (JsonProcessingException | JAPIException | IllegalAccessException | JSONException e) {
             throw new RuntimeException(e);

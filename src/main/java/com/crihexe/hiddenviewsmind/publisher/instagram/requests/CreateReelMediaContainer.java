@@ -1,11 +1,13 @@
 package com.crihexe.hiddenviewsmind.publisher.instagram.requests;
 
+import com.crihexe.hiddenviewsmind.dto.Post;
 import com.crihexe.hiddenviewsmind.dto.UserTagImage;
 import com.crihexe.japi.annotations.*;
 import com.crihexe.japi.annotations.Method.Auth;
 import com.crihexe.japi.annotations.Method.Methods;
 
 import java.util.List;
+import java.util.Set;
 
 @Method(method = Methods.POST, auth = Auth.QueryToken)
 @Endpoint("/v20.0/{userID}/media")
@@ -29,9 +31,6 @@ public class CreateReelMediaContainer {
 	@QueryParam(name = "share_to_feed")
 	public Boolean shareToFeed;
 	
-	@QueryParam(name = "collaborators")
-	public List<String> collaborators;
-	
 	@QueryParam(name = "cover_url")
 	public String coverUrl;
 	
@@ -39,7 +38,7 @@ public class CreateReelMediaContainer {
 	public String audioName;
 	
 	@QueryParam(name = "user_tags")
-	public List<UserTagImage> userTags;
+	public Set<UserTagImage> userTags;
 	
 	@QueryParam(name = "location_id")
 	public String locationID;
@@ -47,10 +46,17 @@ public class CreateReelMediaContainer {
 	@QueryParam(name = "thumb_offset")
 	public Integer thumbOffset;
 
-	public CreateReelMediaContainer(String userID, String mediaType, String videoURL) {
+	public CreateReelMediaContainer(String userID, Post post) {
 		this.userID = userID;
-		this.mediaType = mediaType;
-		this.videoURL = videoURL;
+		this.mediaType = post.getMediaType().getName();
+		this.videoURL = post.getVideoURL();
+		this.caption = post.getCaption();
+		this.shareToFeed = post.getShareToFeed();
+		this.locationID = post.getLocationID();
+		this.coverUrl = post.getCoverURL();
+		this.audioName = post.getAudioName();
+		this.userTags = post.getUserTags();
+		this.thumbOffset = post.getThumbOffset();
 	}
 	
 }
